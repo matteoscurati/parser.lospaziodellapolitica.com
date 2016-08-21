@@ -3,7 +3,6 @@ require "nokogiri"
 require "pp"
 require "sanitize"
 
-#output = File.open("articles.txt", "w")
 articles = []
 authors = []
 @file = File.open("articoli.xml")
@@ -21,26 +20,27 @@ authors = []
   authors << author
 end
 
-pp "Totali autori: ", authors.count
-
+print "Totali autori: ", authors.count, "\n"
 @doc.xpath("/pma_xml_export/table[@name='wp_posts']").each do |post|
   article = {}
 
-  date_text = post.xpath("column[@name='post_date']").text
-  #date_text = date_text[0, 10]
-  date_format = "%Y-%m-%d %H:%M:%S"
-  date = DateTime.strptime(date_text, date_format)
-  title = post.xpath("column[@name='post_title']").text
-  content = post.xpath("column[@name='post_content']").text
-  author = post.xpath("column[@name='post_author']").text
+  #if ! post.xpath("column[@name='post_title']").text.empty? || post.xpath("column[@name='post_content']").empty?
+    date_text = post.xpath("column[@name='post_date']").text
+    date_text = date_text[0, 10]
+    date_format = "%Y-%m-%d"
+    date = Date.strptime(date_text, date_format)
+    title = post.xpath("column[@name='post_title']").text
+    content = post.xpath("column[@name='post_content']").text
+    author = post.xpath("column[@name='post_author']").text
 
-  article[:title] = title
-  article[:date] = date
-  article[:content] = content
-  article[:author_id] = author
-  #article[:content] = Sanitize.fragment(content, elements: ['a'], attributes: {a: ['href']})
+    article[:title] = title
+    article[:date] = date
+    article[:content] = content
+    article[:author_id] = author
+    #article[:content] = Sanitize.fragment(content, elements: ['a'], attributes: {a: ['href']})
 
-  articles << article
+    articles << article
+  #end
 end
 
 articles.each do |article|
@@ -51,10 +51,16 @@ articles.each do |article|
   end
 end
 
-pp "Totale articoli: ", articles.count
+print "Totale articoli: ", articles.count, "\n"
 
 articles.uniq! { |article| article[:content] }
 
-pp "Totale articoli unici: ", articles.count
+print "Totale articoli unici: ", articles.count, "\n"
 
 articles.sort_by { |article| article[:date] }
+
+articles.delete_if { |article| article[:title].empty? }
+articles.delete_if { |article| article[:content].empty? }
+articles.delete_if { |article| article[:author_id].empty? }
+
+print "Totale articoli validi: ", articles.count, "\n"
