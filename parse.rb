@@ -69,9 +69,3 @@ articles.uniq! { |article| article[:title] }
 print "Totale articoli unici: ", articles.count, "\n"
 
 print "Totale articoli validi: ", articles.count, "\n"
-
-articles.each do |art|
-  if art[:title] == "Roberto Baggio, la demografia italiana, il nuovo welfare"
-    pp art[:id]
-  end
-end
