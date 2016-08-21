@@ -11,7 +11,6 @@ authors = []
 
 @doc.xpath("/pma_xml_export/table[@name='wp_users']").each do |auth|
   author = {}
-
   wp_id = auth.xpath("column[@name='ID']").text
   name = auth.xpath("column[@name='user_login']").text
 
@@ -27,7 +26,7 @@ print "Totali autori: ", authors.count, "\n"
 
   status = post.xpath("column[@name='post_status']").text
 
-  if status == "inherit" || status == "publish"
+  if status == "publish"
     date_text = post.xpath("column[@name='post_date']").text
     date_text = date_text[0, 10]
     date_format = "%Y-%m-%d"
@@ -58,7 +57,7 @@ end
 
 print "Totale articoli: ", articles.count, "\n"
 
-articles.uniq! { |article| article[:content] }
+#articles.uniq! { |article| article[:content] }
 
 articles.delete_if { |article| article[:title].empty? }
 articles.delete_if { |article| article[:content].empty? }
@@ -66,7 +65,7 @@ articles.delete_if { |article| article[:author_id].empty? }
 
 articles = articles.sort_by { |article| article[:id] }.reverse
 
-articles.uniq! { |article| article[:title] }
+#articles.uniq! { |article| article[:title] }
 
 print "Totale articoli unici: ", articles.count, "\n"
 
