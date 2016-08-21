@@ -25,7 +25,9 @@ print "Totali autori: ", authors.count, "\n"
 @doc.xpath("/pma_xml_export/table[@name='wp_posts']").each do |post|
   article = {}
 
-  #if ! post.xpath("column[@name='post_title']").text.empty? || post.xpath("column[@name='post_content']").empty?
+  status = post.xpath("column[@name='post_status']").text
+
+  if status == "inherit" || status == "publish"
     date_text = post.xpath("column[@name='post_date']").text
     date_text = date_text[0, 10]
     date_format = "%Y-%m-%d"
@@ -43,7 +45,7 @@ print "Totali autori: ", authors.count, "\n"
     #article[:content] = Sanitize.fragment(content, elements: ['a'], attributes: {a: ['href']})
 
     articles << article
-  #end
+  end
 end
 
 articles.each do |article|
